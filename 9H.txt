@@ -1,0 +1,56 @@
+export{}
+interface Taxable {
+  applyTax(amount: number): number;
+}
+abstract class Worker {
+  public name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  abstract calculatePay(): number;
+
+  getDetails(): string {
+    return `Name: ${this.name}`;
+  }
+}
+class HourlyWorker extends Worker {
+  private hourlyRate: number;
+  private hoursWorked: number;
+  constructor(name: string, id: number | string, hourlyRate: number, hoursWorked: number) {
+    super(name);
+    this.hourlyRate = hourlyRate;
+    this.hoursWorked = hoursWorked;
+  }
+
+  calculatePay(): number {
+    return this.hourlyRate * this.hoursWorked;
+  }
+}
+class SalariedWorker extends Worker implements Taxable {
+  private monthlySalary: number;
+  constructor(name: string, id: number | string, monthlySalary: number) {
+    super(name);
+    this.monthlySalary = monthlySalary;
+  }
+
+  calculatePay(): number {
+    return this.monthlySalary;
+  }
+
+  applyTax(amount: number): number {
+    return amount * 0.90;
+  }
+}
+
+
+const hourlyEmp = new HourlyWorker("Somchai", 101, 150, 160);
+console.log(hourlyEmp.getDetails()); // Name: Somchai
+console.log(`Gross Pay: ${hourlyEmp.calculatePay()}`); // Gross Pay: 24000
+
+const salariedEmp = new SalariedWorker("Somsri", 102, 50000);
+console.log(salariedEmp.getDetails()); // Name: Somsri
+const grossPay = salariedEmp.calculatePay();
+const netPay = salariedEmp.applyTax(grossPay);
+console.log(`Gross Pay: ${grossPay}`); // Gross Pay: 50000
+console.log(`Net Pay (After 10% Tax): ${netPay}`); // Net Pay (After 10% Tax): 45000
